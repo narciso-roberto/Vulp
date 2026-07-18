@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { controller } from "./controller.js";
+import { productController } from "../users/controller.js";
 
-const router = Router();
+const productsRouter = Router();
 
-router.get("/product/:id", controller.getById);
+productsRouter.get("/product/:id", productController.getById);
+productsRouter.post("/product/:id", productController.postProduct);
+productsRouter.put("/product/:id", productController.putProduct);
+productsRouter.delete("/product/:id", productController.deleteProduct);
 
-export { router };
+export { productsRouter };

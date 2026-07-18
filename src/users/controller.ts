@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-class ProductController {
+class UserController {
   constructor() {}
   getById = async (req: Request, res: Response) => {};
   postProduct = async (req: Request, res: Response) => {};
@@ -8,6 +8,6 @@ class ProductController {
   deleteProduct = async (req: Request, res: Response) => {};
 }
 
-const productController = new ProductController();
+const userController = new UserController();
 
-export { productController };
+export { userController };
