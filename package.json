@@ -1,0 +1,33 @@
+{
+  "name": "vulp",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/narciso-roberto/Vulp#readme",
+  "bugs": {
+    "url": "https://github.com/narciso-roberto/Vulp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/narciso-roberto/Vulp.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tsx --watch ./src/server.ts"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.1.1",
+    "prisma": "^7.8.0",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.8.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
+}
