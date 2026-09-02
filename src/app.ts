@@ -1,9 +1,8 @@
 import express, { type Express, type Request, type Response } from "express";
-import { productsRouter } from "./products/router.js";
-
+import { userRouter } from "./users/index.ts";
 const app: Express = express();
 
 app.use(express.json());
-app.use(productsRouter);
+app.use(userRouter);
 
 export { app };
