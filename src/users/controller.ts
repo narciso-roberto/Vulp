@@ -1,5 +1,7 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { UserService } from "./service.ts";
+import { createUserSchema } from "../users/schemas/CreateUserSchema.ts";
+import { AppError } from "../errors/Errors.ts";
 
 export class UserController {
   constructor(private userService: UserService) {}
@@ -16,10 +18,20 @@ export class UserController {
     return res.status(200).json(user);
   };
 
-  postUser = async (req: Request, res: Response) => {
-    const user = await this.userService.create(req.body);
+  postUser = async (req: Request, res: Response, next: NextFunction) => {
+    const isValid = createUserSchema.safeParse(req.body);
 
-    return res.status(201).json(user);
+    if (!isValid.success) {
+      throw new AppError(400, "Invalid body format");
+    }
+
+    try {
+      const user = await this.userService.create(req.body);
+
+      return res.status(201).json(user);
+    } catch (err) {
+      next(err);
+    }
   };
 
   putUser = async (req: Request, res: Response) => {

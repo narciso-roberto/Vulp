@@ -1,4 +1,6 @@
 import { UserRepository } from "./repository.ts";
+import { CreateUserDto } from "./dto/createUserDTO.ts";
+import { AppError } from "../errors/Errors.ts";
 
 class UserService {
   constructor(private userRepository: UserRepository) {}
@@ -7,16 +9,20 @@ class UserService {
     const user = await this.userRepository.findById(id);
 
     if (!user) {
-      throw new Error("User not found");
+      throw new AppError(404, "User not found");
     }
 
     return user;
   }
 
-  async create(data: any) {
+  async create(userDto: CreateUserDto) {
+    const alreadyExist = await this.userRepository.findByEmail(userDto.email);
 
-    const user = await this.userRepository.create(data);
+    if (alreadyExist) {
+      throw new AppError(400, "E-mail already existes");
+    }
 
+    const user = await this.userRepository.create(userDto);
     return user;
   }
 
@@ -34,7 +40,7 @@ class UserService {
     const user = await this.userRepository.findById(id);
 
     if (!user) {
-      throw new Error("User not found");
+      throw new AppError(404, "User not found");
     }
 
     await this.userRepository.delete(id);
