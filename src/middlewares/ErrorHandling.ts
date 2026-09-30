@@ -10,7 +10,7 @@ export const errorHandling = (
   if (erre instanceof AppError) {
     return res.status(erre.status).json({
       message: erre.message,
-      details: erre.details
+      details: erre.details,
     });
   } else {
     return res.status(500).json("Something went wrong!!");

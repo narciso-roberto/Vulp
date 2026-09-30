@@ -1,58 +1,49 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { UserRepository } from "../users/repository.js";
+import { AppError } from "../errors/Errors.ts";
+import { RegisterUserDTO } from "./dto/registerUserDTO.ts";
+import { LoginUserDTO } from "./dto/loginUserDTO.ts";
 
-class AuthService {
-  userRepository: UserRepository;
+export class AuthService {
+  constructor(private userRepository: UserRepository) {}
 
-  constructor() {
-    this.userRepository = new UserRepository();
-  }
-
-  async register(email: string, password: string) {
-    const existingUser = await this.userRepository.findByEmail(email);
-
-    if (existingUser) {
-      throw new Error("User already exists");
-    }
+  async register(registerUserDTO: RegisterUserDTO) {
+    const { password } = registerUserDTO;
 
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = await this.userRepository.create({
-      email,
-      passwordHash,
-    });
+    registerUserDTO.password = passwordHash;
 
+    const user = await this.userRepository.create(registerUserDTO);
+
+    return user;
+  }
+
+  async login(loginUserDTO: LoginUserDTO) {
+    const { email, password } = loginUserDTO;
+
+    const user = await this.userRepository.findByEmail(email);
+
+    if (!user) {
+      throw new Error("Invalid credentials");
+    }
+    const passwordValid = await bcrypt.compare(password, user.password);
+    if (!passwordValid) {
+      throw new Error("Invalid credentials");
+    }
+
+    const token = jwt.sign(
+      {
+        sub: user.id,
+      },
+      process.env.JWT_SECRET as string,
+      {
+        expiresIn: "15m",
+      },
+    );
     return {
-      id: user.id,
-      email: user.email,
+      token,
     };
   }
-
-  async login(email: string, password: string) {
-    // const user = await this.userRepository.findByEmail(email);
-    // if (!user) {
-    //   throw new Error("Invalid credentials");
-    // }
-    // const passwordValid = await bcrypt.compare(password, user.passwordHash);
-    // if (!passwordValid) {
-    //   throw new Error("Invalid credentials");
-    // }
-    // const token = jwt.sign(
-    //   {
-    //     sub: user.id,
-    //   },
-    //   process.env.JWT_SECRET!,
-    //   {
-    //     expiresIn: "15m",
-    //   },
-    // );
-    // return {
-    //   token,
-    // };
-  }
 }
-
-const authService = new AuthService();
-
-export { authService };
