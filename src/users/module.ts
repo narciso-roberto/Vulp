@@ -8,4 +8,4 @@ const userService = new UserService(userRepository);
 const userController = new UserController(userService);
 const userRouter = createUserRouter(userController);
 
-export {userRouter}
+export { userRepository, userService, userController, userRouter };

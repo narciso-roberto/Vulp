@@ -1,12 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { UserRepository } from "../users/repository.js";
+import { UserService } from "../users/service.ts";
 import { AppError } from "../errors/Errors.ts";
 import { RegisterUserDTO } from "./dto/registerUserDTO.ts";
 import { LoginUserDTO } from "./dto/loginUserDTO.ts";
 
 export class AuthService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userService: UserService) {}
 
   async register(registerUserDTO: RegisterUserDTO) {
     const { password } = registerUserDTO;
@@ -15,7 +15,7 @@ export class AuthService {
 
     registerUserDTO.password = passwordHash;
 
-    const user = await this.userRepository.create(registerUserDTO);
+    const user = await this.userService.create(registerUserDTO);
 
     return user;
   }
@@ -23,7 +23,7 @@ export class AuthService {
   async login(loginUserDTO: LoginUserDTO) {
     const { email, password } = loginUserDTO;
 
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userService.getByEmailToLogin(email);
 
     if (!user) {
       throw new Error("Invalid credentials");

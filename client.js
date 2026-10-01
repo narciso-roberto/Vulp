@@ -12,4 +12,3 @@ const response = await fetch("http://localhost:3000/product", {
 
 const data = await response;
 
-// console.log(data);
