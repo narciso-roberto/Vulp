@@ -1,8 +1,9 @@
-import { prisma } from "../database/database.ts";
+import { DataBase } from "../database/database.ts";
 
 class AuthRepository {
+  constructor(private database: DataBase) {}
   async findByEmail(email: string) {
-    return prisma.user.findUnique({
+    return this.database.user.findUnique({
       where: {
         email,
       },

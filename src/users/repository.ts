@@ -1,10 +1,12 @@
-import { prisma } from "../database/database.ts";
 import { AppError } from "../errors/Errors.ts";
 import { type CreateUserDto } from "./dto/createUserDTO.ts";
+import { DataBase } from "../database/database.ts";
 
 class UserRepository {
+  constructor(private database: DataBase) {}
+
   async findById(id: string) {
-    return prisma.user.findUnique({
+    return this.database.user.findUnique({
       where: {
         id,
       },
@@ -13,7 +15,7 @@ class UserRepository {
 
   async findByEmail(email: string) {
     try {
-      const user = await prisma.user.findUnique({
+      const user = await this.database.user.findUnique({
         where: {
           email,
         },
@@ -26,13 +28,13 @@ class UserRepository {
   }
 
   async create(data: CreateUserDto) {
-    const createdUser = await prisma.user.create({ data });
+    const createdUser = await this.database.user.create({ data });
 
     return createdUser;
   }
 
   async update(id: string, data: any) {
-    return prisma.user.update({
+    return this.database.user.update({
       where: {
         id,
       },
@@ -41,7 +43,7 @@ class UserRepository {
   }
 
   async delete(id: string) {
-    return prisma.user.delete({
+    return this.database.user.delete({
       where: {
         id,
       },
